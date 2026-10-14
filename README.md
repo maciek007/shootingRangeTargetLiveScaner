@@ -22,6 +22,6 @@ Flutter +  Dart FFI (Foreign Function Interface) do implementacji biblioteki Ope
 - [ ] Zbudowanie aplikacji na IPhone'a
 - [ ] Resetowanie strzałów (nowa tarcza)
 
-# Status prac
-- 
+# Postęp prac
+- 14.10 - wybranie technologii i sprawdzenie możliwości wdrożeniowych OpenCV
 - 

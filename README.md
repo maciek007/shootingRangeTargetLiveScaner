@@ -2,7 +2,7 @@
 Aplikacja mobilna do skanowania tarczy strzelniczej na żywo z jednego telefonu i wyświetlanie wyników na drugim
 
 # Technologia
-Flutter +  Dart FFI (Foreign Function Interface) do implementacji biblioteki OpenCV
+Kotlin +  Native C++ do implementacji biblioteki OpenCV
 
 # Funkcjonalności
 ## Wymagane
@@ -19,7 +19,6 @@ Flutter +  Dart FFI (Foreign Function Interface) do implementacji biblioteki Ope
 - [ ] Wizualizacja położenia tarczy i wykrytych trafień na telefonie wysyłającym
 - [ ] Tabela wyników
 - [ ] Komunikacja odbiorca - serwer - telefon ze skanującą kamerą
-- [ ] Zbudowanie aplikacji na IPhone'a
 - [ ] Resetowanie strzałów (nowa tarcza)
 
 # Postęp prac

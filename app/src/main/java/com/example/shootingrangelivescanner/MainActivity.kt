@@ -1,6 +1,5 @@
 package com.example.shootingrangelivescanner
 
-import android.hardware.camera2.CameraAccessException
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
@@ -11,7 +10,11 @@ import com.example.shootingrangelivescanner.databinding.ActivityMainBinding
 import org.opencv.android.CameraActivity
 import org.opencv.android.CameraBridgeViewBase
 import org.opencv.android.OpenCVLoader
+import org.opencv.core.Core
+import org.opencv.core.CvType
 import org.opencv.core.Mat
+import org.opencv.core.Point
+import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
 
 class MainActivity : CameraActivity(), CameraBridgeViewBase.CvCameraViewListener2 {
@@ -59,6 +62,7 @@ class MainActivity : CameraActivity(), CameraBridgeViewBase.CvCameraViewListener
      * which is packaged with this application.
      */
     external fun stringFromJNI(): String
+
     override fun onCameraViewStarted(width: Int, height: Int) {
     }
 
@@ -68,10 +72,13 @@ class MainActivity : CameraActivity(), CameraBridgeViewBase.CvCameraViewListener
     override fun onCameraFrame(inputFrame: CameraBridgeViewBase.CvCameraViewFrame?): Mat? {
         if(inputFrame != null) {
             val img = inputFrame.rgba()
-            val cannyImg : Mat = Mat.zeros(img.size(), img.type())
-            Imgproc.Canny(img, cannyImg, 80.0, 90.0)
-
-            return cannyImg
+            val mat1 = Mat(img.size(), img.type())
+            val mat2 = Mat(img.size(), img.type())
+            Imgproc.GaussianBlur(img, mat1, Size(5.0,5.0), 0.5)
+            Imgproc.Canny(mat1, mat2, 60.0, 100.0)
+            Imgproc.morphologyEx(mat2, mat1, Imgproc.MORPH_CLOSE ,Mat(), Point(-1.0,-1.0),2 )
+            thinning(mat1)
+            return mat1
         }
         else return null
     }
@@ -101,4 +108,39 @@ class MainActivity : CameraActivity(), CameraBridgeViewBase.CvCameraViewListener
             System.loadLibrary("shootingrangelivescanner")
         }
     }
+}
+
+
+fun thinning(binaryImg: Mat) {
+    val skel = Mat.zeros(binaryImg.size(), binaryImg.type())
+    val temp = Mat()
+    val eroded = Mat()
+    val img = binaryImg.clone()
+    Log.e("mat_type",img.type().toString())
+    Log.e("mat_type",skel.type().toString())
+
+    // Element strukturalny w kształcie krzyża 3x3
+    val element = Imgproc.getStructuringElement(Imgproc.MORPH_CROSS, Size(3.0, 3.0))
+
+    try {
+        while (true) {
+            Imgproc.erode(img, eroded, element)
+            Imgproc.dilate(eroded, temp, element) // Otwarcie morfologiczne
+            Core.subtract(img, temp, temp)        // Różnica między oryginałem a otwarciem
+            Core.bitwise_or(skel, temp, skel)     // Dodanie do wynikowego szkieletu
+            eroded.copyTo(img)
+
+            // Zakończ, gdy wszystkie białe piksele zostaną wyerodowane
+            if (Core.countNonZero(img) == 0) {
+                break
+            }
+        }
+    } finally {
+        // Zwolnienie pamięci natywnej C++ nawet w przypadku wyjątku
+        temp.release()
+        eroded.release()
+        img.release()
+        element.release()
+    }
+    skel.copyTo(binaryImg)
 }

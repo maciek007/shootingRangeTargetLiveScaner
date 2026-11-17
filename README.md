@@ -2,7 +2,7 @@
 Aplikacja mobilna do skanowania tarczy strzelniczej na żywo z jednego telefonu i wyświetlanie wyników na drugim
 
 # Technologia
-Kotlin +  Native C++ do implementacji biblioteki OpenCV
+Kotlin + biblioteka OpenCV
 
 # Funkcjonalności
 ## Wymagane
@@ -23,4 +23,6 @@ Kotlin +  Native C++ do implementacji biblioteki OpenCV
 
 # Postęp prac
 - 14.10 - wybranie technologii i sprawdzenie możliwości wdrożeniowych OpenCV
-- 
+- Reprezentacja matematyczna tarczy, wpływ kąta patrzenia na ułożenie granic pól punktowych
+- Zaznajomienie z algorytmem Hougha do znajdowania obiektów na zdjęciu dających się opisać równaniem matematycznym
+- 17.11 - Wdrożenie OpenCV do projektu, podglądu z kamery, dodanie zooma i użycie algorytmu Canny'iego do znajdowania krawędzi (m.in do znajdowania pól punktowychg w tarczy)
